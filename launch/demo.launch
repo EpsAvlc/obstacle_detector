@@ -5,13 +5,17 @@
   <node name="scans_demo" pkg="rosbag" type="play" output="screen" args="--clock --loop $(find obstacle_detector)/resources/scans_demo.bag"/>
 
   <node name="map_to_scanner_base" pkg="tf2_ros" type="static_transform_publisher" args="0 0 0 0 0 0 map robot"/>
+  <!-- robot坐标系 与front_scanner坐标系之间的转换 -->
   <node name="scanner_base_to_front_scanner" pkg="tf2_ros" type="static_transform_publisher" args="0.23565 -0.0005 0.06795 0 0 0 robot front_scanner"/>
+  <!-- robot坐标系 与rear_scanner坐标系之间的转换 rear_scanner 与 front_scanner 之间yaw角相差180度 -->
   <node name="scanner_base_to_rear_scanner" pkg="tf2_ros" type="static_transform_publisher" args="-0.23832 0.00542 0.09888 3.141592 0 0 robot rear_scanner"/>
 
+  <!-- 启动 nodelet manager-->
   <node name="nodelet_manager" pkg="nodelet" type="nodelet" args="manager" output="screen">
     <param name="num_worker_threads" value="20"/>
   </node>
 
+  <!-- 载入 nodelet ScanMerger -->
   <node name="scans_merger" pkg="nodelet" type="nodelet" args="load obstacle_detector/ScansMerger nodelet_manager">
     <param name="active"            value="true"/>
     <param name="publish_scan"      value="false"/>
